@@ -5,11 +5,7 @@ import { IoNotificationsOutline } from "react-icons/io5";
 import { LuMail } from "react-icons/lu";
 import { IoBookmarkOutline } from "react-icons/io5";
 import { IoPersonOutline } from "react-icons/io5";
-import { FaRegComment } from "react-icons/fa6";
-import { BiRepost } from "react-icons/bi";
-import { FaRegHeart } from "react-icons/fa";
-import { IoIosStats } from "react-icons/io";
-import { RiShare2Line } from "react-icons/ri";
+import { Feedcard } from "@/component";
 
 interface TwitterSideBarItem{
   title : string
@@ -62,14 +58,27 @@ export default function Home() {
           <button className="font-sans text-xl py-3 mt-2 bg-[#1D9BF0] rounded-full w-52 content-center ">Post</button>
         </div>
 
-        <div className="col-span-5 border-x border-slate-700">
+        <div className="col-span-5 border-x border-slate-700 overflow-scroll no-scrollbar">
 
-          <div className="flex justify-around h-14 items-center border-b border-slate-700 text-slate-400 bg-transparent ">
+          <div className="flex justify-around h-14 items-center border-b border-slate-700 text-slate-400 fixed w-[665px] bg-[#2F3336] bg-opacity-80">
             <div>For you</div>
             <div>Following</div>
           </div>
 
-          <div className="grid grid-cols-12 px-4 font-sans py-2 border-b border-slate-700">
+          <div className="h-14"/>
+
+          <Feedcard/>
+          <Feedcard/>
+          <Feedcard/>
+          <Feedcard/>
+          <Feedcard/>
+          <Feedcard/>
+          <Feedcard/>
+          <Feedcard/>
+          <Feedcard/>
+          <Feedcard/>
+
+          {/* <div className="grid grid-cols-12 px-4 font-sans py-2 border-b border-slate-700">
             <div className="col-span-1"> </div>
             <div className="col-span-11 flex flex-col">
               <div className="flex items-center gap-1">
@@ -124,7 +133,7 @@ export default function Home() {
               </div>
 
             </div>
-          </div>
+          </div> */}
 
         </div>
 
