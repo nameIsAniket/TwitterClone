@@ -60,11 +60,16 @@ export default function Home() {
 
         <div className="col-span-5 border-x border-slate-700 overflow-scroll no-scrollbar">
 
-          <div className="flex justify-around h-14 items-center border-b border-slate-700 text-slate-400 fixed w-[665px] bg-[#2F3336] bg-opacity-80">
-            <div>For you</div>
-            <div>Following</div>
-          </div>
+          <div className="flex h-14 border-b border-slate-700 text-slate-400 fixed w-[665px] bg-[#000000] bg-opacity-50 backdrop-blur">
 
+            <div className="w-1/2 flex justify-center items-center hover:bg-[#3E4144] hover:bg-opacity-30">
+              For you
+            </div>
+            <div className="w-1/2 flex justify-center items-center hover:bg-[#3E4144]">
+              Following
+            </div>
+            
+          </div>
           <div className="h-14"/>
 
           <Feedcard/>

@@ -4,10 +4,18 @@ import { BiRepost } from "react-icons/bi";
 import { FaRegHeart } from "react-icons/fa";
 import { IoIosStats } from "react-icons/io";
 import { RiShare2Line } from "react-icons/ri";
+import Image from "next/image";
 
 export const Feedcard:React.FC = () => {
     return  <div className="grid grid-cols-12 px-4 font-sans py-2 border-b border-slate-700">
-                <div className="col-span-1"> </div>
+                <div className="col-span-1">
+                  <Image src="https://pbs.twimg.com/profile_images/1127986516339249152/-NCXZ_DB_400x400.jpg" 
+                  alt = "user-image"
+                  height={40} 
+                  width={40}
+                  className="rounded-full"
+                 />
+                </div>
                 <div className="col-span-11 flex flex-col">
                   <div className="flex items-center gap-1">
                     <div>Naval</div>
