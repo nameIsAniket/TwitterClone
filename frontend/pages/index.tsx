@@ -6,6 +6,7 @@ import { LuMail } from "react-icons/lu";
 import { IoBookmarkOutline } from "react-icons/io5";
 import { IoPersonOutline } from "react-icons/io5";
 import { Feedcard } from "@/component";
+import { GoogleLogin } from '@react-oauth/google';
 
 interface TwitterSideBarItem{
   title : string
@@ -142,7 +143,23 @@ export default function Home() {
 
         </div>
 
-        <div className="col-span-4"></div>
+        <div className="col-span-4">
+          <div className="py-4 text-xl font-semibold flex pl-16">Join Today.</div>
+          <div className="pl-16">
+            <GoogleLogin
+              onSuccess={credentialResponse => {
+                console.log(credentialResponse);
+              }}
+              onError={() => {
+                console.log('Login Failed');
+              }}
+              size="large"
+              text="signup_with"
+              shape="circle"
+              width={300}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
