@@ -9,6 +9,7 @@
     "dev": "tsc-watch --onSuccess \"npm start\""
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.7",
     "prisma": "5.22.0",
     "tsc-watch": "^6.2.0",
     "typescript": "^5.6.3"
@@ -17,11 +18,14 @@
     "@apollo/server": "^4.11.2",
     "@apollo/subgraph": "^2.9.3",
     "@prisma/client": "5.22.0",
+    "@types/express": "^5.0.0",
     "apollo-server-express": "^3.13.0",
+    "axios": "^1.7.7",
     "cors": "^2.8.5",
     "express": "^4.21.1",
     "graphql": "^16.9.0",
     "graphql-tag": "^2.12.6",
+    "jsonwebtoken": "^9.0.2",
     "prism": "^4.1.2"
   }
 }

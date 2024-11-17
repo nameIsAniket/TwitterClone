@@ -1,36 +1,39 @@
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import cors from 'cors';
-import express, { query } from 'express';
+import express from 'express';
+import { User } from './user';
+import bodyParser from "body-parser"
 
-export async function initServer(){
-    const app = express();
+export async function initServer() {
+  const app = express();
 
-    const server = new ApolloServer<any>({
-    typeDefs : `
-        type Query {
-            sayHello:String
-        }
+  app.use(bodyParser.json());
+  app.use(cors());
+
+  const server = new ApolloServer({
+    typeDefs: `
+      ${User.types}
+      type Query {
+        ${User.queries}
+      }
     `,
     resolvers: {
-        Query : {
-            sayHello : () => "Hello"
-        }
+      Query: {
+        ...User.resolvers.queries,
+      },
     },
-    });
-    // Note you must call `start()` on the `ApolloServer`
-    // instance before passing the instance to `expressMiddleware`
-    await server.start();
+  });
 
-    // Specify the path where we'd like to mount our server
+  // Start the server
+  await server.start();
 
-    app.use(
+  // Apply middleware
+  app.use(
     '/graphql',
-    cors<cors.CorsRequest>(),
     express.json(),
     expressMiddleware(server),
-    );
-    
-    return app;
-}
+  );
 
+  return app;
+}

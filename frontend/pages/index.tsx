@@ -6,12 +6,18 @@ import { LuMail } from "react-icons/lu";
 import { IoBookmarkOutline } from "react-icons/io5";
 import { IoPersonOutline } from "react-icons/io5";
 import { Feedcard } from "@/component";
-import { GoogleLogin } from '@react-oauth/google';
+import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
+
+import { graphqlClient } from "@/client/api";
+import { getToken } from "@/graphql/quries/user";
+import { useCallback } from "react";
+import toast from "react-hot-toast";
 
 interface TwitterSideBarItem{
   title : string
   logo  : React.ReactNode
 }
+
 
 const twitterSideBar:TwitterSideBarItem[] = [
   {
@@ -41,6 +47,25 @@ const twitterSideBar:TwitterSideBarItem[] = [
 ]
 
 export default function Home() {
+
+  const handleLoginWithGoogle = useCallback(
+    async (credentialResponse:CredentialResponse) => {
+      console.log(credentialResponse)
+      const token = credentialResponse.credential;
+      
+      if(!token) return toast.error("Google Token not found");
+
+      const {verifyGoogleToken} = await graphqlClient.request(getToken,{token : token})
+      // console.log("tokenResponse",getTokenResponse.verifyGoogleToken)
+      toast.success("Success");
+
+      if(verifyGoogleToken)window.localStorage.setItem('jwttokenforTwitter',verifyGoogleToken)
+
+      return verifyGoogleToken;
+
+    },[]
+  )
+
   return (
     <div>
       <div className="grid grid-cols-12 h-screen w-screen">
@@ -147,9 +172,7 @@ export default function Home() {
           <div className="py-4 text-xl font-semibold flex pl-16">Join Today.</div>
           <div className="pl-16">
             <GoogleLogin
-              onSuccess={credentialResponse => {
-                console.log(credentialResponse);
-              }}
+              onSuccess={handleLoginWithGoogle}
               onError={() => {
                 console.log('Login Failed');
               }}
