@@ -12,6 +12,7 @@ import { graphqlClient } from "@/client/api";
 import { getToken } from "@/graphql/quries/user";
 import { useCallback } from "react";
 import toast from "react-hot-toast";
+import { useCurrentUser } from "@/hooks/user";
 
 interface TwitterSideBarItem{
   title : string
@@ -47,6 +48,8 @@ const twitterSideBar:TwitterSideBarItem[] = [
 ]
 
 export default function Home() {
+  const {user} = useCurrentUser();
+  console.log(user);
 
   const handleLoginWithGoogle = useCallback(
     async (credentialResponse:CredentialResponse) => {
@@ -169,19 +172,21 @@ export default function Home() {
         </div>
 
         <div className="col-span-4">
-          <div className="py-4 text-xl font-semibold flex pl-16">Join Today.</div>
-          <div className="pl-16">
-            <GoogleLogin
-              onSuccess={handleLoginWithGoogle}
-              onError={() => {
-                console.log('Login Failed');
-              }}
-              size="large"
-              text="signup_with"
-              shape="circle"
-              width={300}
-            />
-          </div>
+          {!user && <div>
+            <div className="py-4 text-xl font-semibold flex pl-16">Join Today.</div>
+            <div className="pl-16">
+              <GoogleLogin
+                onSuccess={handleLoginWithGoogle}
+                onError={() => {
+                  console.log('Login Failed');
+                }}
+                size="large"
+                text="signup_with"
+                shape="circle"
+                width={300}
+              />
+            </div>
+          </div>}
         </div>
       </div>
     </div>
