@@ -36,9 +36,8 @@ export async function initServer() {
     express.json(),
     expressMiddleware(server,{
       context : async({req,res}) => {
-        const header = req.headers.authorization;
         return {
-          user : header ? JWTService.decodeToken(header.split("Bearer ")[1]) : null
+          user : req.headers.authorization ? JWTService.decodeToken(req.headers.authorization.split("Bearer ")[1]) : null
         }
       }
     }),

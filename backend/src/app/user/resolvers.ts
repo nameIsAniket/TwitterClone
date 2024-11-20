@@ -32,7 +32,7 @@ const queries = {
 
         const {data} = await axios.get<GoogleTokenResponse>(googleOAuthUrl.toString(),{responseType:"json"})
 
-        console.log(data);
+        //console.log(data);
         
         const user = await prismaClient.user.findUnique({
             where : {email : data.email}
@@ -64,7 +64,7 @@ const queries = {
         // console.log(ctx);
         const id = ctx.user?.id;
         if (!id) return null;
-
+        //console.log("ctx_user",ctx.user);
         const user = await prismaClient.user.findUnique({where : {id}});
         return user;
     }

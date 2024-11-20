@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   /* config options here */
   reactStrictMode: true,
   images : {
-    domains: ["pbs.twimg.com"]
+    domains: ["pbs.twimg.com","lh3.googleusercontent.com"]
   }
 };
 
