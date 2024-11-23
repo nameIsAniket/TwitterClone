@@ -7,6 +7,5 @@ export const useCurrentUser = () => {
         queryKey: ["current-user"],
         queryFn: () => graphqlClient.request(getCurrentUser)
     });
-
     return {...query,user : query.data?.getCurrentUser}
 }

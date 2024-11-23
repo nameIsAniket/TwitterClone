@@ -14,6 +14,12 @@ import { useCallback } from "react";
 import toast from "react-hot-toast";
 import { useCurrentUser } from "@/hooks/user";
 import { useQueryClient } from "@tanstack/react-query";
+import { ImEarth } from "react-icons/im";
+import { MdOutlineGifBox } from "react-icons/md";
+import { CiImageOn } from "react-icons/ci";
+import { HiOutlineEmojiHappy } from "react-icons/hi";
+
+// import { TweetCard } from "@/component/TweetCard";
 
 interface TwitterSideBarItem{
   title : string
@@ -52,7 +58,6 @@ export default function Home() {
   const {user} = useCurrentUser();
   const queryClient = useQueryClient();
 
-
   const handleLoginWithGoogle = useCallback(
     async (credentialResponse:CredentialResponse) => {
       console.log(credentialResponse)
@@ -87,14 +92,21 @@ export default function Home() {
             ))}
           </div>
           <button className="font-sans text-xl py-3 mt-2 bg-[#1D9BF0] rounded-full w-52 content-center ">Post</button>
-          <div className="absolute bottom-8 p-3 hover:bg-gray-900 rounded-full">
-            {user && user.profileImage && <Image src={user?.profileImage || ""}
-            alt="Profile-Image"
-            height={40}
-            width={40}
-            className="rounded-full"></Image>}
-            
+
+          <div className="absolute bottom-8 p-2 hover:bg-gray-900 rounded-full flex items-center">
+            <div>
+              {user && user.profileImage && <Image src={user?.profileImage || ""}
+              alt="Profile-Image"
+              height={40}
+              width={40}
+              className="rounded-full"></Image>}
+            </div>
+            <div>
+              <div className="font-sans text-xl px-3">{user?.firstName} {user?.lastName}</div>
+              <div className="text-[#71767b] px-3">@AniketLakade</div>
+            </div>
           </div>   
+
         </div>
 
         <div className="col-span-5 border-x border-slate-700 overflow-scroll no-scrollbar">
@@ -109,7 +121,43 @@ export default function Home() {
             </div>
             
           </div>
-          <div className="h-14"/>
+          <div className="h-16"/>
+
+          <div>
+            <div className="grid grid-cols-12 px-4 border-b border-slate-700">
+              <div className="col-span-1"> 
+                {user && <div className="pt-3">
+                    <Image src={user?.profileImage || "user not found"} 
+                    alt = "user-image"
+                    height={40} 
+                    width={40}
+                    className="rounded-full"
+                    />
+                </div>}
+              </div>
+
+            <div className="col-span-11 ">
+              <textarea className="bg-transparent w-full text-xl pt-3 py-3 font-sans outline-none"
+              placeholder="What is Happening?!"
+              ></textarea>
+
+              <div className="flex items-center gap-2 pb-3 py-3 text-[#1D9BF0] border-b border-[#3E4144]">
+                <div><ImEarth /></div>
+                <div>Everyone can reply</div>
+              </div>
+
+              <div>
+              <CiImageOn />
+              <MdOutlineGifBox />
+              <HiOutlineEmojiHappy />
+              </div>
+            </div>
+
+            </div>
+          </div>
+
+          {/* <TweetCard/> */}
+
 
           <Feedcard/>
           <Feedcard/>
@@ -121,7 +169,56 @@ export default function Home() {
           <Feedcard/>
           <Feedcard/>
           <Feedcard/>
-
+          {/* <div className="grid grid-cols-12 px-4 font-sans py-2 border-b border-slate-700">
+            <div className="col-span-1"> </div>
+            <div className="col-span-11 flex flex-col">
+              <div className="flex items-center gap-1">
+                <div>Naval</div>
+                <div className="text-[#71767b]">@naval</div>
+                <div className="bg-[#71767b] rounded-full h-[2px] w-[2px]"><div/></div>
+                <div className="text-[#71767b]">15h</div>
+              </div>
+              
+              <p>
+                Elon Musk wasn’t eligible to be President, so he did the next best thing and got one elected.
+              </p>
+              <div className="flex justify-between mt-1">
+                <div className="flex items-center hover:text-[#1D9BF0] ">
+                  <div className=" hover:bg-blue-950 rounded-full p-2">
+                    <FaRegComment />
+                  </div>
+                  <div>330</div>
+                </div>
+                <div className="flex items-center hover:text-green-500">
+                  <div className="hover:bg-green-950 rounded-full text-lg p-2">
+                    <BiRepost />
+                  </div>
+                  <div>591</div>
+                </div>
+                <div className="flex items-center hover:text-pink-500">
+                  <div className=" hover:bg-pink-950 rounded-full p-2">
+                    <FaRegHeart /> 
+                  </div>
+                  <div>330</div>
+                </div>
+                <div className="flex items-center hover:text-[#1D9BF0]">
+                  <div className=" hover:bg-blue-950 rounded-full p-2">
+                    <IoIosStats /> 
+                  </div>
+                  <div>364k</div>
+                </div>
+                <div className="flex items-center ">
+                  <div className=" hover:bg-blue-950 rounded-full p-2 hover:text-[#1D9BF0]">
+                    <IoBookmarkOutline />
+                  </div>
+                  <div className=" hover:bg-blue-950 rounded-full p-2 hover:text-[#1D9BF0]">
+                    <RiShare2Line />
+                  </div>
+                </div>
+                
+              </div>
+            </div>
+          </div> */}
         </div>
 
         <div className="col-span-4">
