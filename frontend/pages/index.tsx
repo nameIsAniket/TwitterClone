@@ -18,6 +18,8 @@ import { ImEarth } from "react-icons/im";
 import { MdOutlineGifBox } from "react-icons/md";
 import { CiImageOn } from "react-icons/ci";
 import { HiOutlineEmojiHappy } from "react-icons/hi";
+import { RiCalendarScheduleLine } from "react-icons/ri";
+import { CiLocationOn } from "react-icons/ci";
 
 // import { TweetCard } from "@/component/TweetCard";
 
@@ -57,6 +59,13 @@ const twitterSideBar:TwitterSideBarItem[] = [
 export default function Home() {
   const {user} = useCurrentUser();
   const queryClient = useQueryClient();
+
+  const handleSelectImage = useCallback( ()=>{
+    const input = document.createElement('input');
+    input.setAttribute("type","file");
+    input.setAttribute("accept","image/*");
+    input.click();
+  },[])
 
   const handleLoginWithGoogle = useCallback(
     async (credentialResponse:CredentialResponse) => {
@@ -137,21 +146,26 @@ export default function Home() {
               </div>
 
             <div className="col-span-11 ">
-              <textarea className="bg-transparent w-full text-xl pt-3 py-3 font-sans outline-none"
+              <textarea className="bg-transparent w-full text-xl pt-4 py-4 font-sans outline-none"
               placeholder="What is Happening?!"
+              rows={1}
               ></textarea>
 
-              <div className="flex items-center gap-2 pb-3 py-3 text-[#1D9BF0] border-b border-[#3E4144]">
+              <div className="flex items-center gap-2 pb-3 text-[#1D9BF0] border-b border-[#3E4144]">
                 <div><ImEarth /></div>
                 <div>Everyone can reply</div>
               </div>
 
-              <div>
-              <CiImageOn />
-              <MdOutlineGifBox />
-              <HiOutlineEmojiHappy />
+              <div className="flex text-[#1D9BF0] m-2 items-center">
+                <CiImageOn className="h-[20px] w-[20px] m-3 " onClick={handleSelectImage} />
+                <MdOutlineGifBox className="h-[20px] w-[20px] m-3"/>
+                <HiOutlineEmojiHappy className="h-[20px] w-[20px] m-3"/>
+                <RiCalendarScheduleLine className="h-[20px] w-[20px] m-3"/>
+                <CiLocationOn className="h-[20px] w-[20px] m-3"/>
+                <div className="ml-auto"><button className="font-sans font-bold text-base  text-white bg-[#1D9BF0] rounded-full px-5 py-2 content-center">Post</button></div>
+                </div>
               </div>
-            </div>
+              
 
             </div>
           </div>
