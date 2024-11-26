@@ -20,6 +20,8 @@ model User {
   email String  @unique
   profileImage String
 
+  tweets Tweet[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -30,4 +32,15 @@ model Post {
   content   String?
   published Boolean @default(false)
   authorId  Int
+}
+
+model Tweet {
+  id String @id @default(cuid())
+  tweet String
+  imageURL String?
+
+  author User @relation(fields: [authorId], references: [id])
+  authorId String 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
