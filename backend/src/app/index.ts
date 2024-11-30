@@ -30,16 +30,16 @@ export async function initServer() {
       }
 
       type Tweet {
-          id : ID!
-          tweet : String!
-          imageURL : String
-          
-          author : User 
+        id : ID!
+        tweet : String!
+        imageURL : String
+        
+        author : User 
       }
 
       type Query {
         ${User.queries}
-        getAllTweets : [tweet]
+        getAllTweets : [Tweet]
       }
       
       type Mutation {
@@ -49,7 +49,8 @@ export async function initServer() {
     resolvers: {
       Query: {
         ...User.resolvers.queries,
-        getAllTweets : ()=>{prismaClient.tweet.findMany({orderBy : {createdAt : 'desc'}})}
+        getAllTweets : ()=>{
+          return prismaClient.tweet.findMany({orderBy : {createdAt : 'desc'}})}
       },
 
       ...User.resolvers.extraResolver,
@@ -86,7 +87,6 @@ export async function initServer() {
     express.json(),
     expressMiddleware(server,{
       context : async({req,res}) => {
-        console.log()
         return {
           user : req.headers.authorization ? JWTService.decodeToken(req.headers.authorization.split("Bearer ")[1]) : null
         }
