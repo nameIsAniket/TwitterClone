@@ -5,6 +5,10 @@ export default {
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./client/**/*.{js,ts,jsx,tsx,mdx}",
+    "./hooks/**/*.{js,ts,jsx,tsx,mdx}",
+    "./gql/**/*.{js,ts,jsx,tsx,mdx}",
+    "./graphql/**/*.{js,ts,jsx,tsx,mdx}"
   ],
   theme: {
     extend: {

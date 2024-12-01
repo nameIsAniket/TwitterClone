@@ -247,7 +247,7 @@ export default function Home() {
               <GoogleLogin
                 onSuccess={handleLoginWithGoogle}
                 onError={() => {
-                  console.log('Login Failed')
+                  console.log('Login Failed');
                 }}
                 size="large"
                 text="signup_with"
@@ -258,6 +258,9 @@ export default function Home() {
           </div>}
         </div>
       </div>
+      
+
+
     </div>
-  )
+  );
 }
