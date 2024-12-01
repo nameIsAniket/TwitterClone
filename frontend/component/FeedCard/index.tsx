@@ -5,27 +5,34 @@ import { FaRegHeart } from "react-icons/fa";
 import { IoIosStats } from "react-icons/io";
 import { RiShare2Line } from "react-icons/ri";
 import Image from "next/image";
+import { Tweet } from "@/gql/graphql";
 
-export const Feedcard:React.FC = () => {
+interface FeedCardProps {
+  data : Tweet
+}
+export const Feedcard:React.FC<FeedCardProps> = (props) => {
+
+  const { data } = props;
+
     return  <div className="grid grid-cols-12 px-4 font-sans py-2 border-b border-slate-700">
                 <div className="col-span-1">
-                  <Image src="https://pbs.twimg.com/profile_images/1127986516339249152/-NCXZ_DB_400x400.jpg" 
+                  <Image src= {data.author?.profileImage || "https://www.shutterstock.com/shutterstock/photos/1290290407/display_1500/stock-vector-isolated-object-of-avatar-and-dummy-symbol-set-of-avatar-and-image-stock-vector-illustration-1290290407.jpg"}  
                   alt = "user-image"
                   height={40} 
                   width={40}
                   className="rounded-full"
-                 />
+                  />
                 </div>
                 <div className="col-span-11 flex flex-col">
                   <div className="flex items-center gap-1">
-                    <div>Naval</div>
-                    <div className="text-[#71767b]">@naval</div>
+                    <div>{data.author?.firstName}</div>
+                    <div className="text-[#71767b]">@{data.author?.firstName}{data.author?.lastName}</div>
                     <div className="bg-[#71767b] rounded-full h-[2px] w-[2px]"><div/></div>
                     <div className="text-[#71767b]">15h</div>
                   </div>
                   
                   <p>
-                    Elon Musk wasn’t eligible to be President, so he did the next best thing and got one elected.
+                    {data.tweet}
                   </p>
     
                   <div className="flex justify-between mt-1">

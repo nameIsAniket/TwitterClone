@@ -5,12 +5,12 @@ import { IoNotificationsOutline } from "react-icons/io5";
 import { LuMail } from "react-icons/lu";
 import { IoBookmarkOutline } from "react-icons/io5";
 import { IoPersonOutline } from "react-icons/io5";
-import { Feedcard } from "@/component";
+import { Feedcard } from "@/component/FeedCard";
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import Image from "next/image";
 import { graphqlClient } from "@/client/api";
 import { getToken } from "@/graphql/quries/user";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
 import { useCurrentUser } from "@/hooks/user";
 import { useQueryClient } from "@tanstack/react-query";
@@ -20,6 +20,8 @@ import { CiImageOn } from "react-icons/ci";
 import { HiOutlineEmojiHappy } from "react-icons/hi";
 import { RiCalendarScheduleLine } from "react-icons/ri";
 import { CiLocationOn } from "react-icons/ci";
+import { useCreateTweet, useGetAllTweets } from "@/hooks/tweet";
+import { Tweet } from "@/gql/graphql";
 
 // import { TweetCard } from "@/component/TweetCard";
 
@@ -58,8 +60,11 @@ const twitterSideBar:TwitterSideBarItem[] = [
 
 export default function Home() {
   const {user} = useCurrentUser();
+  const {tweets = []} = useGetAllTweets();
+  const [content, setContent] = useState("");
   const queryClient = useQueryClient();
-
+  const {mutate} = useCreateTweet()  
+  
   const handleSelectImage = useCallback( ()=>{
     const input = document.createElement('input');
     input.setAttribute("type","file");
@@ -83,7 +88,12 @@ export default function Home() {
       await queryClient.invalidateQueries(["current-user"]);
 
     },[queryClient]
-  )
+  );
+
+  const handleCreateTweet = useCallback(()=> {
+    console.log({content});
+    mutate({content});
+  },[content,mutate])
 
   return (
     <div>
@@ -120,7 +130,7 @@ export default function Home() {
 
         <div className="col-span-5 border-x border-slate-700 overflow-scroll no-scrollbar">
 
-          <div className="flex h-14 border-b border-slate-700 text-slate-400 fixed w-[665px] bg-[#000000] bg-opacity-50 backdrop-blur">
+          <div className="flex h-14 border-b border-slate-700 text-slate-400 bg-[#000000] bg-opacity-50 backdrop-blur fixed w-[598px]">
 
             <div className="w-1/2 flex justify-center items-center hover:bg-[#3E4144] hover:bg-opacity-30">
               For you
@@ -149,6 +159,8 @@ export default function Home() {
               <textarea className="bg-transparent w-full text-xl pt-4 py-4 font-sans outline-none"
               placeholder="What is Happening?!"
               rows={1}
+              onChange={e=>setContent(e.target.value)}
+              value={content}
               ></textarea>
 
               <div className="flex items-center gap-2 pb-3 text-[#1D9BF0] border-b border-[#3E4144]">
@@ -162,27 +174,20 @@ export default function Home() {
                 <HiOutlineEmojiHappy className="h-[20px] w-[20px] m-3"/>
                 <RiCalendarScheduleLine className="h-[20px] w-[20px] m-3"/>
                 <CiLocationOn className="h-[20px] w-[20px] m-3"/>
-                <div className="ml-auto"><button className="font-sans font-bold text-base  text-white bg-[#1D9BF0] rounded-full px-5 py-2 content-center">Post</button></div>
+                <div className="ml-auto">
+                  <button className="font-sans font-bold text-base  text-white bg-[#1D9BF0] rounded-full px-5 py-2 content-center"
+                  onClick={handleCreateTweet}>Post</button>
                 </div>
               </div>
-              
 
+              </div>
             </div>
           </div>
 
           {/* <TweetCard/> */}
 
-
-          <Feedcard/>
-          <Feedcard/>
-          <Feedcard/>
-          <Feedcard/>
-          <Feedcard/>
-          <Feedcard/>
-          <Feedcard/>
-          <Feedcard/>
-          <Feedcard/>
-          <Feedcard/>
+          {tweets?.map( tweet => tweet ? <Feedcard key={tweet?.id} data={tweet as Tweet}/>: null )}
+          
           {/* <div className="grid grid-cols-12 px-4 font-sans py-2 border-b border-slate-700">
             <div className="col-span-1"> </div>
             <div className="col-span-11 flex flex-col">
@@ -242,7 +247,7 @@ export default function Home() {
               <GoogleLogin
                 onSuccess={handleLoginWithGoogle}
                 onError={() => {
-                  console.log('Login Failed');
+                  console.log('Login Failed')
                 }}
                 size="large"
                 text="signup_with"
@@ -254,5 +259,5 @@ export default function Home() {
         </div>
       </div>
     </div>
-  );
+  )
 }
