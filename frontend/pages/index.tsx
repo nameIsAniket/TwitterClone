@@ -31,69 +31,62 @@ export default function Home() {
 
   return (
     <div>
-      <div>
-        <TwitterLayout>
-          <div className="flex h-14 border-b border-slate-700 text-slate-400 bg-[#000000] bg-opacity-50 backdrop-blur fixed w-[598px]">
-
+      <TwitterLayout>
+        <div className="hidden md:flex h-14 border-b border-slate-700 text-slate-400 bg-[#000000] bg-opacity-50 backdrop-blur fixed w-[598px]">
           <div className="w-1/2 flex justify-center items-center hover:bg-[#3E4144] hover:bg-opacity-30">
             For you
           </div>
           <div className="w-1/2 flex justify-center items-center hover:bg-[#3E4144]">
             Following
           </div>
+        </div>
+        <div className="h-16"/>
 
-          </div>
-          <div className="h-16"/>
-
-          <div>
-          <div className="grid grid-cols-12 px-4 border-b border-slate-700">
-            <div className="col-span-1"> 
-              {user && <div className="pt-3">
-                  <Image src={user?.profileImage || "user not found"} 
-                  alt = "user-image"
-                  height={40} 
-                  width={40}
-                  className="rounded-full"
-                  />
-              </div>}
-            </div>
-
-          <div className="col-span-11 ">
-            <textarea className="bg-transparent w-full text-xl pt-4 py-4 font-sans outline-none"
-            placeholder="What is Happening?!"
-            rows={1}
-            onChange={e=>setContent(e.target.value)}
-            value={content}
-            ></textarea>
-
-            <div className="flex items-center gap-2 pb-3 text-[#1D9BF0] border-b border-[#3E4144]">
-              <div><ImEarth /></div>
-              <div>Everyone can reply</div>
-            </div>
-
-            <div className="flex text-[#1D9BF0] m-2 items-center">
-              <CiImageOn className="h-[20px] w-[20px] m-3 " onClick={handleSelectImage} />
-              <MdOutlineGifBox className="h-[20px] w-[20px] m-3"/>
-              <HiOutlineEmojiHappy className="h-[20px] w-[20px] m-3"/>
-              <RiCalendarScheduleLine className="h-[20px] w-[20px] m-3"/>
-              <CiLocationOn className="h-[20px] w-[20px] m-3"/>
-              <div className="ml-auto">
-                <button className="font-sans font-bold text-base  text-white bg-[#1D9BF0] rounded-full px-5 py-2 content-center"
-                onClick={handleCreateTweet}>Post</button>
-              </div>
-            </div>
-
-            </div>
-          </div>
+        <div>
+        <div className="grid grid-cols-12 px-4 border-b border-slate-700">
+          <div className="col-span-1"> 
+            {user && <div className="pt-3">
+                <Image src={user?.profileImage || "user not found"} 
+                alt = "user-image"
+                height={40} 
+                width={40}
+                className="rounded-full"
+                />
+            </div>}
           </div>
 
-          {tweets?.map( tweet => tweet ? <Feedcard key={tweet?.id} data={tweet as Tweet}/>: null )}
-        </TwitterLayout>
-      </div>
+        <div className="col-span-11 ">
+          <textarea className="bg-transparent w-full text-xl pt-4 py-4 font-sans outline-none"
+          placeholder="What is Happening?!"
+          rows={1}
+          onChange={e=>setContent(e.target.value)}
+          value={content}
+          ></textarea>
 
+          <div className="flex items-center gap-2 pb-3 text-[#1D9BF0] border-b border-[#3E4144]">
+            <div><ImEarth /></div>
+            <div>Everyone can reply</div>
+          </div>
+
+          <div className="flex text-[#1D9BF0] m-2 items-center">
+            <CiImageOn className="h-[20px] w-[20px] m-3 " onClick={handleSelectImage} />
+            <MdOutlineGifBox className="h-[20px] w-[20px] m-3"/>
+            <HiOutlineEmojiHappy className="h-[20px] w-[20px] m-3"/>
+            <RiCalendarScheduleLine className="h-[20px] w-[20px] m-3"/>
+            <CiLocationOn className="h-[20px] w-[20px] m-3"/>
+            <div className="ml-auto">
+              <button className="font-sans font-bold text-base  text-white bg-[#1D9BF0] rounded-full px-5 py-2 content-center"
+              onClick={handleCreateTweet}>Post</button>
+            </div>
+          </div>
+
+          </div>
+        </div>
+        </div>
+
+        {tweets?.map( tweet => tweet ? <Feedcard key={tweet?.id} data={tweet as Tweet}/>: null )}
+      </TwitterLayout>
     </div>
-
-
   );
 }
 
@@ -103,6 +96,8 @@ import { BiRepost } from "react-icons/bi";
 import { FaRegHeart } from "react-icons/fa";
 import { IoIosStats } from "react-icons/io";
 import { RiShare2Line } from "react-icons/ri";
+import { BsFeather } from "react-icons/bs";
+
 interface FeedCardProps {
   data : Tweet
 }
@@ -249,41 +244,43 @@ export const TwitterLayout : React.FC<TwitterLayoutProp> = (props) => {
 
     return <div>
       <div className="grid grid-cols-12 h-screen w-screen">
-        <div className="col-span-3 mt-1 pl-24 relative">
-          <div className="text-[26px] hover:bg-gray-900 rounded-full w-fit p-3 cursor-pointer transition-all">
-            <BsTwitterX />
-          </div>
-          <div className="flex flex-col">
-            {twitterSideBar.map(item => (
-              <div className={`flex items-center hover:bg-gray-900 rounded-full w-fit cursor-pointer transition-all` } key={item.title}>
-                <div className="text-3xl p-3 ">{item.logo}</div>
-                <div className="font-sans text-[20px] pl-3 pr-6">{item.title}</div>
+        <div className="col-span-2 sm:col-span-3 md:col-span-3 mt-1 flex justify-center relative">
+          <div>
+            <div className="text-[26px] hover:bg-gray-900 rounded-full w-fit p-3 cursor-pointer transition-all">
+              <BsTwitterX />
+            </div>
+            <div className="flex flex-col">
+              {twitterSideBar.map(item => (
+                <div className={`flex items-center hover:bg-gray-900 rounded-full w-fit cursor-pointer transition-all` } key={item.title}>
+                  <div className="text-3xl p-3 ">{item.logo}</div>
+                  <div className="hidden sm:inline font-sans text-[20px] pl-2 pr-5">{item.title}</div>
+                </div>
+              ))}
+            </div>
+            <button className="hidden sm:inline font-sans text-xl py-3 mt-2 bg-[#1D9BF0] rounded-full w-full content-center ">Post</button>
+            <button className="flex sm:hidden font-sans text-xl py-3 mt-2 bg-[#1D9BF0] rounded-full w-full content-center justify-center"><BsFeather /></button>
+
+            <div className="hidden sm:flex absolute bottom-8 p-2 hover:bg-gray-900 rounded-full items-center">
+              <div>
+                {user && user.profileImage && <Image src={user?.profileImage || ""}
+                alt="Profile-Image"
+                height={40}
+                width={40}
+                className="rounded-full"></Image>}
               </div>
-            ))}
+              <div>
+                <div className="font-sans text-xl px-3">{user?.firstName} {user?.lastName}</div>
+                <div className="text-[#71767b] px-3">@AniketLakade</div>
+              </div>
+            </div>   
           </div>
-          <button className="font-sans text-xl py-3 mt-2 bg-[#1D9BF0] rounded-full w-52 content-center ">Post</button>
-
-          <div className="absolute bottom-8 p-2 hover:bg-gray-900 rounded-full flex items-center">
-            <div>
-              {user && user.profileImage && <Image src={user?.profileImage || ""}
-              alt="Profile-Image"
-              height={40}
-              width={40}
-              className="rounded-full"></Image>}
-            </div>
-            <div>
-              <div className="font-sans text-xl px-3">{user?.firstName} {user?.lastName}</div>
-              <div className="text-[#71767b] px-3">@AniketLakade</div>
-            </div>
-          </div>   
-
         </div>
 
-        <div className="col-span-5 border-x border-slate-700 overflow-scroll no-scrollbar">
+        <div className="col-span-9 sm:col-span-6 md:col-span-5 border-x border-slate-700 overflow-scroll no-scrollbar">
             {props.children}
         </div>
 
-        <div className="col-span-4">
+        <div className="col-span-1 sm:col-span-3 md:col-span-4">
           {!user && <div>
             <div className="py-4 text-xl font-semibold flex pl-16">Join Today.</div>
             <div className="pl-16">
