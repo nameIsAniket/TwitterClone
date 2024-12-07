@@ -10,10 +10,13 @@ import { CiLocationOn } from "react-icons/ci";
 import { useCreateTweet, useGetAllTweets } from "@/hooks/tweet";
 import { Tweet } from "@/gql/graphql";
 
+interface HomeProps {
+  tweets : Tweet[]
+}
 
-export default function Home() {
+export default function Home(props : HomeProps) {
   const {user} = useCurrentUser();
-  const {tweets = []} = useGetAllTweets();
+  const tweets  = props.tweets;
   const [content, setContent] = useState("");
   const {mutate} = useCreateTweet()  
   
@@ -107,21 +110,21 @@ export const Feedcard:React.FC<FeedCardProps> = (props) => {
   const { data } = props;
 
     return  <div className="grid grid-cols-12 px-4 font-sans py-2 border-b border-slate-700">
-                <div className="col-span-1">
+                <a href={`/${data.author?.id}`} className="col-span-1">
                   <Image src= {data.author?.profileImage || "https://www.shutterstock.com/shutterstock/photos/1290290407/display_1500/stock-vector-isolated-object-of-avatar-and-dummy-symbol-set-of-avatar-and-image-stock-vector-illustration-1290290407.jpg"}  
                   alt = "user-image"
                   height={40} 
                   width={40}
                   className="rounded-full"
                   />
-                </div>
+                </a>
                 <div className="col-span-11 flex flex-col">
-                  <div className="flex items-center gap-1">
+                  <a href={`/${data.author?.id}`} className="flex items-center gap-1">
                     <div>{data.author?.firstName}</div>
                     <div className="text-[#71767b]">@{data.author?.firstName}{data.author?.lastName}</div>
                     <div className="bg-[#71767b] rounded-full h-[2px] w-[2px]"><div/></div>
                     <div className="text-[#71767b]">15h</div>
-                  </div>
+                  </a>
                   
                   <p>
                     {data.tweet}
@@ -183,6 +186,8 @@ import { graphqlClient } from "@/client/api";
 import { getToken } from "@/graphql/quries/user";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { GetServerSideProps } from "next";
+import { getAllTweetsQuery } from "@/graphql/quries/tweet";
 
 interface TwitterSideBarItem{
   title : string
@@ -306,4 +311,13 @@ export const TwitterLayout : React.FC<TwitterLayoutProp> = (props) => {
         </div>
       </div>
     </div>
+}
+
+export const getServerSideProps : GetServerSideProps<HomeProps> = async (context) => {
+  const allTweets = await graphqlClient.request(getAllTweetsQuery);
+  return {
+    props : {
+      tweets : allTweets.getAllTweets as Tweet[]
+    }
+  }
 }

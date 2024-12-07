@@ -50,7 +50,8 @@ export async function initServer() {
       Query: {
         ...User.resolvers.queries,
         getAllTweets : ()=>{
-          return prismaClient.tweet.findMany({orderBy : {createdAt : 'desc'}})}
+          return prismaClient.tweet.findMany({orderBy : {createdAt : 'desc'}})
+        }
       },
 
       ...User.resolvers.extraResolver,

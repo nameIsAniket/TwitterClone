@@ -73,6 +73,12 @@ const queries = {
         //console.log("ctx_user",ctx.user);
         const user = await prismaClient.user.findUnique({where : {id}});
         return user;
+    },
+
+    getUserByID : async(parent : any, {givenId}:{givenId : string},ctx:GraphqlContext) =>{
+        if (!givenId) return null;
+        const user = await prismaClient.user.findUnique({where : {id : givenId}});
+        return user;
     }
 }
 

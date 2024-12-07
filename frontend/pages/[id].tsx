@@ -1,12 +1,16 @@
-import { useCurrentUser } from '@/hooks/user';
 import {Feedcard, TwitterLayout} from './index' 
-import type { NextPage } from 'next'
+import type { GetServerSideProps, NextPage } from 'next'
 import Image from 'next/image';
 import { IoArrowBack } from "react-icons/io5";
-import { Tweet } from '@/gql/graphql';
+import { Tweet, User } from '@/gql/graphql';
+import { graphqlClient } from '@/client/api';
+import { getUserByIdQuery } from '@/graphql/quries/user';
 
- const UserProfilePage: NextPage = () => {
-    const {user} = useCurrentUser();
+interface ServerProps {
+    userInfo? : User}
+
+const UserProfilePage: NextPage<ServerProps> = (props) => {
+    const user = props.userInfo;
     return <div>
         <TwitterLayout>
             <div className='relative'>
@@ -46,7 +50,7 @@ import { Tweet } from '@/gql/graphql';
                             Born January 10, 2000
                         </div>
                         <div>
-                            
+
                             joined March 2015
                         </div>
                     </div>
@@ -67,6 +71,22 @@ import { Tweet } from '@/gql/graphql';
             </div>
         </TwitterLayout>
     </div>
+}
+
+export const getServerSideProps : GetServerSideProps<ServerProps> = async(context) => {
+    const givenId = context.query.id as string | undefined    
+
+    if(!givenId) return {notFound:true, props : {user : undefined}}
+
+    const userInfo = await graphqlClient.request(getUserByIdQuery, {givenId})
+
+    if(!userInfo?.getUserByID) return {notFound:true, props : {user : undefined}}
+
+    return {
+        props : {
+            userInfo : userInfo.getUserByID as User
+        }
+    }
 }
 
 export default UserProfilePage
