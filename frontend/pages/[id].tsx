@@ -42,9 +42,11 @@ import { Tweet } from '@/gql/graphql';
                             Wardha, India
                         </div>
                         <div>
+
                             Born January 10, 2000
                         </div>
                         <div>
+                            
                             joined March 2015
                         </div>
                     </div>
@@ -62,7 +64,6 @@ import { Tweet } from '@/gql/graphql';
                     {user?.tweets?.map(tweet => <Feedcard key={tweet?.id} data={tweet as Tweet}/>)}
                 </div>
                 
-
             </div>
         </TwitterLayout>
     </div>

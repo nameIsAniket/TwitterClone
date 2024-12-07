@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useCurrentUser } from "@/hooks/user";
 import { ImEarth } from "react-icons/im";
 import { MdOutlineGifBox } from "react-icons/md";
@@ -101,6 +101,7 @@ import { BsFeather } from "react-icons/bs";
 interface FeedCardProps {
   data : Tweet
 }
+
 export const Feedcard:React.FC<FeedCardProps> = (props) => {
 
   const { data } = props;
@@ -186,35 +187,8 @@ import { useQueryClient } from "@tanstack/react-query";
 interface TwitterSideBarItem{
   title : string
   logo  : React.ReactNode
+  link : string
 }
-
-
-const twitterSideBar:TwitterSideBarItem[] = [
-  {
-    title : "Home",
-    logo  : <GoHome />
-  },
-  {
-    title : "Explore",
-    logo  : <CiSearch />
-  },
-  {
-    title : "Notifications",
-    logo  : <IoNotificationsOutline />
-  },
-  {
-    title : "Messages",
-    logo  : <LuMail />
-  },
-  {
-    title : "Bookmarks",
-    logo  : <IoBookmarkOutline />
-  },
-  {
-    title : "Profile",
-    logo  : <IoPersonOutline />
-  }
-]
 
 interface TwitterLayoutProp {
     children : React.ReactNode;
@@ -223,6 +197,39 @@ interface TwitterLayoutProp {
 export const TwitterLayout : React.FC<TwitterLayoutProp> = (props) => {
     const {user} = useCurrentUser();
     const queryClient = useQueryClient();
+
+    const twitterSideBar:TwitterSideBarItem[] = useMemo(() => [
+      {
+        title : "Home",
+        logo  : <GoHome />,
+        link  : '/'
+      },
+      {
+        title : "Explore",
+        logo  : <CiSearch />,
+        link  : '/'
+      },
+      {
+        title : "Notifications",
+        logo  : <IoNotificationsOutline />,
+        link  : '/'
+      },
+      {
+        title : "Messages",
+        logo  : <LuMail />,
+        link  : '/'
+      },
+      {
+        title : "Bookmarks",
+        logo  : <IoBookmarkOutline />,
+        link  : '/'
+      },
+      {
+        title : "Profile",
+        logo  : <IoPersonOutline />,
+        link  : `/${user?.id}`
+      }
+    ],[user?.id])
 
     const handleLoginWithGoogle = useCallback(
     async (credentialResponse:CredentialResponse) => {
@@ -251,10 +258,10 @@ export const TwitterLayout : React.FC<TwitterLayoutProp> = (props) => {
             </div>
             <div className="flex flex-col">
               {twitterSideBar.map(item => (
-                <div className={`flex items-center hover:bg-gray-900 rounded-full w-fit cursor-pointer transition-all` } key={item.title}>
+                <a href={item.link} className={`flex items-center hover:bg-gray-900 rounded-full w-fit cursor-pointer transition-all` } key={item.title}>
                   <div className="text-3xl p-3 ">{item.logo}</div>
                   <div className="hidden sm:inline font-sans text-[20px] pl-2 pr-5">{item.title}</div>
-                </div>
+                </a>
               ))}
             </div>
             <button className="hidden sm:inline font-sans text-xl py-3 mt-2 bg-[#1D9BF0] rounded-full w-full content-center ">Post</button>
