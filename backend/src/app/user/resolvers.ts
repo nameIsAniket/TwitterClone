@@ -3,6 +3,7 @@ import { prismaClient } from "../../client/db";
 import JWTService from "../services/jwt";
 import { GraphqlContext } from "../../interfaces";
 import { User } from "@prisma/client";
+import UserServices from "../services/user";
 
 interface GoogleTokenResponse {
     iss?: string,
@@ -22,70 +23,64 @@ interface GoogleTokenResponse {
     alg?: string,
     kid?: string,
     typ?: string
-  }
-  
+}
 
 const queries = {
     verifyGoogleToken : async(parent : any,{token}:{token : string}) => {
-        const googleToken = token;
-        const googleOAuthUrl = new URL("https://oauth2.googleapis.com/tokeninfo");
-        googleOAuthUrl.searchParams.set("id_token",googleToken)
-
-        try {
-            const {data} = await axios.get<GoogleTokenResponse>(googleOAuthUrl.toString(),{responseType:"json"})
-
-            //console.log(data);
-            
-            const user = await prismaClient.user.findUnique({
-                where : {email : data.email}
-            })
-
-            if(!user){
-                await prismaClient.user.create({
-                    data : {
-                        email:data.email,
-                        firstName : data.given_name,
-                        lastNamme : data.family_name,
-                        profileImage : data.picture
-                    }
-                })
-            }
-
-            const userInDB = await prismaClient.user.findFirst({
-                where : {email : data.email}
-            })
-
-            if(!userInDB) throw new Error("Issue in verifyGoogleToken");
-
-            const JWTtoken = await JWTService.generateTokenForUser(userInDB)
-
-            return JWTtoken;
-        } catch (error) {
-            return error;
-        }
-        
+        const JWTtoken = UserServices.verifyGoogleToken(token);
+        return JWTtoken;        
     },
 
     getCurrentUser : async(parent : any, args:any,ctx:GraphqlContext) =>{
-        // console.log(ctx);
         const id = ctx.user?.id;
         if (!id) return null;
-        //console.log("ctx_user",ctx.user);
-        const user = await prismaClient.user.findUnique({where : {id}});
-        return user;
+        return UserServices.getUserByID(id);
     },
 
     getUserByID : async(parent : any, {givenId}:{givenId : string},ctx:GraphqlContext) =>{
-        if (!givenId) return null;
-        const user = await prismaClient.user.findUnique({where : {id : givenId}});
-        return user;
+        return UserServices.getUserByID(givenId);
     }
 }
 
 const extraResolver = {
     User : {
-        tweets : (parent: User)=> prismaClient.tweet.findMany({where : {author : {id : parent.id}}})
+        tweets : (parent: User)=> prismaClient.tweet.findMany({where : {author : {id : parent.id}}}),
+
+        follower : {
+            follow : async (parent: User) => {
+                const result = await prismaClient.follow.findMany({
+                    where : { Following: { id : parent.id}},
+                    include : { follower : true }
+                });
+                return result.map((el) => el.follower)
+            }
+        },
+        
+        Following : {
+            follow :async (parent: User)=> {
+                const result = await prismaClient.follow.findMany({
+                    where : { follower : { id : parent.id}},
+                    include : { Following : true }
+                });
+                
+                return result.map((el) => el.Following)
+            }       
+        }
+
+    },
+    
+}
+
+const mutations = {
+    followUser: async (parent:any,{to}:{to:string},ctx:GraphqlContext) => {
+        if(!ctx.user) throw new Error("unauthenticated");
+        await UserServices.followUser(ctx.user.id,to);
+    },
+
+    unfollowUser: async (parent:any,{to}:{to:string},ctx:GraphqlContext) => {
+        if(!ctx.user) throw new Error("unauthenticated");
+        await UserServices.unfollowUser(ctx.user.id,to);
     }
 }
 
-export const resolvers = {queries,extraResolver}
+export const resolvers = {queries,extraResolver,mutations}

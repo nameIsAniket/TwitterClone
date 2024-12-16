@@ -15,7 +15,6 @@ export const useGetAllTweets = () => {
 
 export const useCreateTweet = () => {
     const queryClient = useQueryClient();
-
     const mutation = useMutation({
         mutationFn : (payload : CreateTweetData) => graphqlClient.request(createTweetMutation,{payload}),
         onSuccess : () => queryClient.invalidateQueries(["get-tweets"])

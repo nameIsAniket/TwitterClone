@@ -16,21 +16,52 @@ interface HomeProps {
 
 export default function Home(props : HomeProps) {
   const {user} = useCurrentUser();
-  const tweets  = props.tweets;
   const [content, setContent] = useState("");
-  const {mutate} = useCreateTweet()  
+  const [imageURL, setImageURL] = useState("");
+  const {mutateAsync} = useCreateTweet()  
+  const {tweets = props.tweets as Tweet[]} = useGetAllTweets();
   
+  const handleInputChangeFile = useCallback((input: HTMLInputElement)=> {
+    return async (event : Event) => {
+      event.preventDefault();
+      const file : File | undefined | null = input.files?.item(0)
+      if(!file) return "no file";
+
+      console.log(file);
+
+      const {getSignedURLForTweet} = await graphqlClient.request(getSignedURLForTweetQuery, {
+        imageName : file.name.split('.')[0],
+        imageType: file.name.split('.')[1]
+      });
+
+      if(getSignedURLForTweet){
+        console.log(getSignedURLForTweet)
+        toast.loading("Uploading...",{id:'2'});
+         await axios.put(getSignedURLForTweet,file,{headers : {'Content-Type' : file.name.split('.')[1]}});
+        // console.log("axiosresponse   ",response)
+        toast.success("Upload Completed",{id:'2'})
+        const url = new URL(getSignedURLForTweet);
+        const myFilePath = `${url.origin}${url.pathname}`;
+        setImageURL(myFilePath)
+      }
+    }
+  },[])
+
   const handleSelectImage = useCallback( ()=>{
     const input = document.createElement('input');
     input.setAttribute("type","file");
     input.setAttribute("accept","image/*");
-    input.click();
-  },[])
+    const handlerFn = handleInputChangeFile(input);
+    input.addEventListener("change",handlerFn)
 
-  const handleCreateTweet = useCallback(()=> {
-    console.log({content});
-    mutate({content});
-  },[content,mutate])
+    input.click();
+  },[handleInputChangeFile])
+
+  const handleCreateTweet = useCallback(async ()=> {
+    await mutateAsync({content,imageURL});
+    setContent("");
+    setImageURL("");
+  },[content, imageURL, mutateAsync])
 
   return (
     <div>
@@ -65,6 +96,7 @@ export default function Home(props : HomeProps) {
           onChange={e=>setContent(e.target.value)}
           value={content}
           ></textarea>
+          {imageURL && <Image src={imageURL} alt="uploadfile" height={200} width={200}/>}
 
           <div className="flex items-center gap-2 pb-3 text-[#1D9BF0] border-b border-[#3E4144]">
             <div><ImEarth /></div>
@@ -129,6 +161,8 @@ export const Feedcard:React.FC<FeedCardProps> = (props) => {
                   <p>
                     {data.tweet}
                   </p>
+
+                  {data.imageURL && <Image src={data.imageURL || ""} alt="imagePost" height={400} width={400}/>}
     
                   <div className="flex justify-between mt-1">
                     <div className="flex items-center hover:text-[#1D9BF0] ">
@@ -183,11 +217,12 @@ import { LuMail } from "react-icons/lu";
 import { IoPersonOutline } from "react-icons/io5";
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import { graphqlClient } from "@/client/api";
-import { getToken } from "@/graphql/quries/user";
+import { getSignedURLForTweetQuery, getToken } from "@/graphql/quries/user";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { GetServerSideProps } from "next";
 import { getAllTweetsQuery } from "@/graphql/quries/tweet";
+import axios from "axios";
 
 interface TwitterSideBarItem{
   title : string
@@ -313,7 +348,7 @@ export const TwitterLayout : React.FC<TwitterLayoutProp> = (props) => {
     </div>
 }
 
-export const getServerSideProps : GetServerSideProps<HomeProps> = async (context) => {
+export const getServerSideProps : GetServerSideProps<HomeProps> = async () => {
   const allTweets = await graphqlClient.request(getAllTweetsQuery);
   return {
     props : {
