@@ -47,6 +47,16 @@ query GetUserByID($givenId: ID!) {
     firstName
     lastName
     profileImage
+    Following {
+      firstName
+      lastName
+      profileImage
+    }
+    follower {
+      firstName
+      lastName
+      profileImage
+    }
     tweets {
       id
       tweet

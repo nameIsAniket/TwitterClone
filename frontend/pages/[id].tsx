@@ -5,12 +5,15 @@ import { IoArrowBack } from "react-icons/io5";
 import { Tweet, User } from '@/gql/graphql';
 import { graphqlClient } from '@/client/api';
 import { getUserByIdQuery } from '@/graphql/quries/user';
+import { useCurrentUser } from '@/hooks/user';
 
 interface ServerProps {
     userInfo? : User}
 
 const UserProfilePage: NextPage<ServerProps> = (props) => {
     const user = props.userInfo;
+    const currentUser = useCurrentUser();
+
     return <div>
         <TwitterLayout>
             <div className='relative'>
@@ -26,9 +29,13 @@ const UserProfilePage: NextPage<ServerProps> = (props) => {
 
                 <Image src={"https://pbs.twimg.com/profile_images/1127986516339249152/-NCXZ_DB_400x400.jpg"} alt='Profile Image' height={140} width={140} className='rounded-full absolute top-48 ml-4 bg-black p-1'></Image>
 
-                <div className='flex justify-end h-16 mt-2'>
-                    <div className='border rounded-full border-slate-600 h-fit px-3 py-1 mr-4 mt-2 font-semibold'>Edit Profile</div>
-                </div>
+                {currentUser.user?.id != user?.id && <div className='flex justify-end h-16 mt-2'>
+                    <button className='border rounded-full border-slate-600 h-fit px-3 py-1 mr-4 mt-2 font-semibold'>Follow</button>
+                </div>}
+
+                {currentUser.user?.id == user?.id && <div className='flex justify-end h-16 mt-2'>
+                    <button className='border rounded-full border-slate-600 h-fit px-3 py-1 mr-4 mt-2 font-semibold'>Edit Profile</button>
+                </div>}
                 
                 <div className='pl-4 pb-4 border-b border-slate-600'>
                     <div className='text-xl font-bold pt-2 '>
@@ -56,10 +63,10 @@ const UserProfilePage: NextPage<ServerProps> = (props) => {
                     </div>
                     <div className='flex gap-2 mt-2 font-sans text-sm h-fit'>
                         <div className='flex gap-1'>
-                            <div>90</div><div className='text-slate-600'>Following</div>
+                            <div>{user?.Following?.length ?? 0}</div><div className='text-slate-600'>Following</div>
                         </div>
                         <div className='flex gap-1'>
-                            <div>2</div><div className='text-slate-600'>followers</div>
+                            <div>{user?.follower?.length ?? 0}</div><div className='text-slate-600'>followers</div>
                         </div>
                     </div>
                 </div>

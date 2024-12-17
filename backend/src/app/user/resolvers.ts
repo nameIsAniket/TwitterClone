@@ -46,26 +46,22 @@ const extraResolver = {
     User : {
         tweets : (parent: User)=> prismaClient.tweet.findMany({where : {author : {id : parent.id}}}),
 
-        follower : {
-            follow : async (parent: User) => {
-                const result = await prismaClient.follow.findMany({
-                    where : { Following: { id : parent.id}},
-                    include : { follower : true }
-                });
-                return result.map((el) => el.follower)
-            }
+        follower : async (parent: User) => {
+            const result = await prismaClient.follow.findMany({
+                where : { Following: { id : parent.id}},
+                include : { follower : true }
+            });
+            return result.map((el) => el.follower)
         },
-        
-        Following : {
-            follow :async (parent: User)=> {
-                const result = await prismaClient.follow.findMany({
-                    where : { follower : { id : parent.id}},
-                    include : { Following : true }
-                });
-                
-                return result.map((el) => el.Following)
-            }       
-        }
+
+        Following :async (parent: User)=> {
+            const result = await prismaClient.follow.findMany({
+                where : { follower : { id : parent.id}},
+                include : { Following : true }
+            });
+            
+            return result.map((el) => el.Following)
+        }       
 
     },
     
@@ -74,12 +70,12 @@ const extraResolver = {
 const mutations = {
     followUser: async (parent:any,{to}:{to:string},ctx:GraphqlContext) => {
         if(!ctx.user) throw new Error("unauthenticated");
-        await UserServices.followUser(ctx.user.id,to);
+        return await UserServices.followUser(ctx.user.id,to);
     },
 
     unfollowUser: async (parent:any,{to}:{to:string},ctx:GraphqlContext) => {
         if(!ctx.user) throw new Error("unauthenticated");
-        await UserServices.unfollowUser(ctx.user.id,to);
+        return await UserServices.unfollowUser(ctx.user.id,to);
     }
 }
 
