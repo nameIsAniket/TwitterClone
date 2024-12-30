@@ -1,6 +1,7 @@
 import { User } from "@prisma/client";
 import { prismaClient } from "../../client/db";
 import { Tweet } from "../tweet";
+import redisClient from "../../client/redis";
 
 interface CreateTwitterPayload {
     content : string
@@ -9,7 +10,10 @@ interface CreateTwitterPayload {
 
 class TweetService{
     public static async getAllTweets(){
+        const cachedTweetsString = await redisClient.get("allTweets");
+        if(cachedTweetsString) return JSON.parse(cachedTweetsString);
         const tweets =  await prismaClient.tweet.findMany({orderBy : {createdAt : 'desc'}})
+        await redisClient.setex("allTweets",10, JSON.stringify(tweets));
         return tweets;
     }
 
@@ -21,6 +25,7 @@ class TweetService{
                 author : {connect : {id : user.id }}
             }}
         )
+        await redisClient.del("allTweets");
         return tweet;
     }
 

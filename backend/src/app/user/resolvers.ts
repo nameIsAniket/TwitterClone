@@ -70,12 +70,14 @@ const extraResolver = {
 const mutations = {
     followUser: async (parent:any,{to}:{to:string},ctx:GraphqlContext) => {
         if(!ctx.user) throw new Error("unauthenticated");
-        return await UserServices.followUser(ctx.user.id,to);
+        await UserServices.followUser(ctx.user.id,to);
+        return true;
     },
 
     unfollowUser: async (parent:any,{to}:{to:string},ctx:GraphqlContext) => {
         if(!ctx.user) throw new Error("unauthenticated");
-        return await UserServices.unfollowUser(ctx.user.id,to);
+        await UserServices.unfollowUser(ctx.user.id,to);
+        return true;
     }
 }
 

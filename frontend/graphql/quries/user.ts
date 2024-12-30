@@ -24,16 +24,28 @@ export const getCurrentUser = graphql(`
             email
             firstName
             lastName
+            Following {
+              id
+              firstName
+              lastName
+              profileImage
+            }
+            follower {
+              id
+              firstName
+              lastName
+              profileImage
+            }
             profileImage
-             tweets {
-                tweet
-                imageURL
-                id
-                author {
-                    profileImage
-                    firstName
-                    lastName
-                }
+            tweets {
+              tweet
+              imageURL
+              id
+              author {
+                  profileImage
+                  firstName
+                  lastName
+              }
             }
         }
     }
