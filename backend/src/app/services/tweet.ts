@@ -13,11 +13,13 @@ class TweetService{
         const cachedTweetsString = await redisClient.get("allTweets");
         if(cachedTweetsString) return JSON.parse(cachedTweetsString);
         const tweets =  await prismaClient.tweet.findMany({orderBy : {createdAt : 'desc'}})
-        await redisClient.setex("allTweets",10, JSON.stringify(tweets));
+        await redisClient.set("allTweets", JSON.stringify(tweets));
         return tweets;
     }
 
     public static async createTweet(payload:CreateTwitterPayload, user:any){
+        const RateLimited = await redisClient.get(`RateLimted:${user.id}`);
+        if(RateLimited) return new Error("Rate limited for 5 seconds")
         const tweet = await prismaClient.tweet.create({
             data : {
                 tweet : payload.content,
@@ -26,6 +28,7 @@ class TweetService{
             }}
         )
         await redisClient.del("allTweets");
+        await redisClient.setex(`RateLimted:${user.id}`,5,"RateLimited")
         return tweet;
     }
 

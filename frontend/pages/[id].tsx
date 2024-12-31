@@ -6,7 +6,7 @@ import { Tweet, User } from '@/gql/graphql';
 import { graphqlClient } from '@/client/api';
 import { getUserByIdQuery } from '@/graphql/quries/user';
 import { useCurrentUser } from '@/hooks/user';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { FollowUserMutation, unFollowUserMutation } from '@/graphql/mutation/user';
 import { useQueryClient } from '@tanstack/react-query';
 
