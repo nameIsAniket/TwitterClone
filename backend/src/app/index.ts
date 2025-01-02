@@ -37,6 +37,10 @@ export async function initServer() {
   app.use(bodyParser.json());
   app.use(cors());
 
+  app.get("/",(req,res) => {
+    res.status(200).json({ message : "Connected"})
+  })
+
   const server = new ApolloServer<GraphqlContext>({
     typeDefs: `
       ${User.types}
