@@ -30,13 +30,13 @@ const UserProfilePage: NextPage<ServerProps> = (props) => {
     const handleFollowUser = useCallback( async() => {
         if(!user?.id) return;
         await graphqlClient.request(FollowUserMutation, {to : user?.id});
-        await queryClient.invalidateQueries(["current-user"])
+        await queryClient.invalidateQueries({queryKey: ["current-user"]})
     },[queryClient, user?.id])
 
     const handleUnFollowUser = useCallback( async() => {
         if(!user?.id) return;
         await graphqlClient.request(unFollowUserMutation, {to : user?.id});
-        await queryClient.invalidateQueries(["current-user"])
+        await queryClient.invalidateQueries({queryKey: ["current-user"]})
     },[queryClient, user?.id])
 
     return <div>
